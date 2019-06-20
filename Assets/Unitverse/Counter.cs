@@ -12,12 +12,7 @@ public class Counter : MonoBehaviour
     void Start()
     {
         if (eventOnStart)
-        {
-            if (count >= threshold)
-                overThreshold.Invoke();
-            else
-                underThreshold.Invoke();
-        }
+            Test();
     }
 
     public void SetCount(int c)
@@ -27,6 +22,14 @@ public class Counter : MonoBehaviour
         if (oldCount < threshold && count >= threshold)
             overThreshold.Invoke();
         else if (oldCount >= threshold && count < threshold)
+            underThreshold.Invoke();
+    }
+
+    public void Test()
+    {
+        if (count >= threshold)
+            overThreshold.Invoke();
+        else
             underThreshold.Invoke();
     }
 
