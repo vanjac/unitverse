@@ -36,4 +36,4 @@ sysinfo.txt
 .vscode/settings.json
 *.log
 
-*/SampleScene.unity*
+Assets/Game*
