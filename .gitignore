@@ -37,3 +37,5 @@ sysinfo.txt
 *.log
 
 Assets/Game*
+Assets/DLC*
+Assets/ProBuilder Data*
