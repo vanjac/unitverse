@@ -18,6 +18,7 @@ public class Reflector : MonoBehaviour
     private static FieldInfo f_Target, f_MethodName, f_Mode, f_Arguments, f_CallState;
     // ArgumentCache fields
     private static FieldInfo f_ObjectArgument, f_IntArgument, f_FloatArgument, f_StringArgument, f_BoolArgument;
+    private static FieldInfo f_ObjectArgumentAssemblyTypeName;
 
     private static void GetFieldInfo()
     {
@@ -36,6 +37,7 @@ public class Reflector : MonoBehaviour
         f_FloatArgument = argumentCacheType.GetField("m_FloatArgument", FieldFlags);
         f_StringArgument = argumentCacheType.GetField("m_StringArgument", FieldFlags);
         f_BoolArgument = argumentCacheType.GetField("m_BoolArgument", FieldFlags);
+        f_ObjectArgumentAssemblyTypeName = argumentCacheType.GetField("m_ObjectArgumentAssemblyTypeName", FieldFlags);
     }
 
     void Start()
@@ -74,15 +76,19 @@ public class Reflector : MonoBehaviour
             // UnityEngine.Events.ArgumentCache
             var argumentCache = f_Arguments.GetValue(item);
 
-            MethodInfo targetMethod = UnityEventBase.GetValidMethodInfo(
-                target, methodName, GetTypeArray(mode));
+            System.Type[] typeArray = GetTypeArray(argumentCache, mode);
+            object[] arguments = GetArguments(argumentCache, mode);
+
+            // also seems to work for arguments that are subtypes of the method arguments
+            MethodInfo targetMethod = target.GetType().GetMethod(methodName,
+                BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance |
+                BindingFlags.FlattenHierarchy,
+                null, typeArray, null);
             if (targetMethod == null)
             {
                 Debug.LogError("No matching method for " + methodName);
                 continue;
             }
-
-            object[] arguments = GetArguments(argumentCache, mode);
 
             try
             {
@@ -100,12 +106,13 @@ public class Reflector : MonoBehaviour
         overrideTarget = o;
     }
 
-    private System.Type[] GetTypeArray(PersistentListenerMode mode)
+    private System.Type[] GetTypeArray(object argumentCache, PersistentListenerMode mode)
     {
         switch (mode)
         {
             case PersistentListenerMode.Object:
-                return new System.Type[1] { typeof(Object) };
+                var type = (string)f_ObjectArgumentAssemblyTypeName.GetValue(argumentCache);
+                return new System.Type[1] { System.Type.GetType(type) };
             case PersistentListenerMode.Int:
                 return new System.Type[1] { typeof(int) };
             case PersistentListenerMode.Float:
