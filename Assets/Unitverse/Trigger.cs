@@ -1,15 +1,18 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
 public class Trigger : MonoBehaviour
 {
+    [System.Serializable]
+    public class TriggerEvent : UnityEvent<Collider> { }
+
     public GameObject targetObject;
     public string targetTag;
     public LayerMask targetLayers = -1;
     public bool onlyFirstObject;
-    public UnityEvent enter, exit;
+    public TriggerEvent enter, exit;
 
     private int numTouching;
 
@@ -25,7 +28,7 @@ public class Trigger : MonoBehaviour
         {
             numTouching ++;
             if (!onlyFirstObject || numTouching == 1)
-                enter.Invoke();
+                enter.Invoke(c);
         }
     }
 
@@ -35,7 +38,7 @@ public class Trigger : MonoBehaviour
         {
             numTouching --;
             if (!onlyFirstObject || numTouching == 0)
-                exit.Invoke();
+                exit.Invoke(c);
         }
     }
 
