@@ -19,7 +19,8 @@ public class Trigger : MonoBehaviour
     private bool ColliderMatches(Collider c)
     {
         return (((1 << c.gameObject.layer) & targetLayers) != 0) &&
-            (c.gameObject == targetObject || c.tag == targetTag);
+            (c.gameObject == targetObject || c.tag == targetTag
+                || (targetObject == null && targetTag == ""));
     }
 
     private void CollisionEnter(Collider c)
