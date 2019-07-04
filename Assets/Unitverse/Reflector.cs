@@ -8,8 +8,6 @@ public class Reflector : MonoBehaviour
 {
     public UnityEvent reflect;
 
-    private Object overrideTarget;
-
     private IEnumerable calls; // List<UnityEngine.Events.PersistentCall>
 
     private const BindingFlags FieldFlags =
@@ -17,10 +15,11 @@ public class Reflector : MonoBehaviour
     // UnityEventBase methods
     private static MethodInfo m_DirtyPersistentCalls;
     // PersistentCall fields
-    private static FieldInfo f_Target, f_MethodName, f_Mode, f_Arguments, f_CallState;
+    private static FieldInfo f_Target;
+    // PersistentCall methods
+    private static MethodInfo m_get_mode, m_get_arguments;
     // ArgumentCache fields
-    private static FieldInfo f_ObjectArgument, f_IntArgument, f_FloatArgument, f_StringArgument, f_BoolArgument;
-    private static FieldInfo f_ObjectArgumentAssemblyTypeName;
+    private static FieldInfo f_ObjectArgument, f_ObjectArgumentAssemblyTypeName;
 
     private static void GetFieldInfo()
     {
@@ -30,17 +29,11 @@ public class Reflector : MonoBehaviour
 
         var persistentCallType = unityAssembly.GetType("UnityEngine.Events.PersistentCall");
         f_Target = persistentCallType.GetField("m_Target", FieldFlags);
-        f_MethodName = persistentCallType.GetField("m_MethodName", FieldFlags);
-        f_Mode = persistentCallType.GetField("m_Mode", FieldFlags);
-        f_Arguments = persistentCallType.GetField("m_Arguments", FieldFlags);
-        f_CallState = persistentCallType.GetField("m_CallState", FieldFlags);
+        m_get_mode = persistentCallType.GetMethod("get_mode", FieldFlags);
+        m_get_arguments = persistentCallType.GetMethod("get_arguments", FieldFlags);
 
         var argumentCacheType = unityAssembly.GetType("UnityEngine.Events.ArgumentCache");
         f_ObjectArgument = argumentCacheType.GetField("m_ObjectArgument", FieldFlags);
-        f_IntArgument = argumentCacheType.GetField("m_IntArgument", FieldFlags);
-        f_FloatArgument = argumentCacheType.GetField("m_FloatArgument", FieldFlags);
-        f_StringArgument = argumentCacheType.GetField("m_StringArgument", FieldFlags);
-        f_BoolArgument = argumentCacheType.GetField("m_BoolArgument", FieldFlags);
         f_ObjectArgumentAssemblyTypeName = argumentCacheType.GetField("m_ObjectArgumentAssemblyTypeName", FieldFlags);
     }
 
@@ -63,51 +56,31 @@ public class Reflector : MonoBehaviour
         reflect.Invoke();
     }
 
-    public void SetTarget(Object o)
+    public void SetTargets(Object o)
     {
         foreach (var item in calls)
             f_Target.SetValue(item, o);
 
         // make sure the event recognizes the changes we made
-        m_DirtyPersistentCalls.Invoke(reflect, new object[0]);
+        m_DirtyPersistentCalls.Invoke(reflect, null);
     }
 
-    private System.Type[] GetTypeArray(object argumentCache, PersistentListenerMode mode)
+    public void SetArguments(Object o)
     {
-        switch (mode)
+        foreach (var item in calls)
         {
-            case PersistentListenerMode.Object:
-                var type = (string)f_ObjectArgumentAssemblyTypeName.GetValue(argumentCache);
-                return new System.Type[1] { System.Type.GetType(type) };
-            case PersistentListenerMode.Int:
-                return new System.Type[1] { typeof(int) };
-            case PersistentListenerMode.Float:
-                return new System.Type[1] { typeof(float) };
-            case PersistentListenerMode.String:
-                return new System.Type[1] { typeof(string) };
-            case PersistentListenerMode.Bool:
-                return new System.Type[1] { typeof(bool) };
-            default:
-                return new System.Type[0];
+            var mode = (PersistentListenerMode)m_get_mode.Invoke(item, null);
+            if (mode == PersistentListenerMode.Object)
+            {
+                var argumentCache = m_get_arguments.Invoke(item, null);
+                f_ObjectArgument.SetValue(argumentCache, o);
+                var assemblyTypeName = o.GetType().AssemblyQualifiedName;
+                // if this is incorrect, the function will show as Missing
+                f_ObjectArgumentAssemblyTypeName.SetValue(argumentCache, assemblyTypeName);
+            }
         }
-    }
 
-    private object[] GetArguments(object argumentCache, PersistentListenerMode mode)
-    {
-        switch (mode)
-        {
-            case PersistentListenerMode.Object:
-                return new object[] { f_ObjectArgument.GetValue(argumentCache) };
-            case PersistentListenerMode.Int:
-                return new object[] { f_IntArgument.GetValue(argumentCache) };
-            case PersistentListenerMode.Float:
-                return new object[] { f_FloatArgument.GetValue(argumentCache) };
-            case PersistentListenerMode.String:
-                return new object[] { f_StringArgument.GetValue(argumentCache) };
-            case PersistentListenerMode.Bool:
-                return new object[] { f_BoolArgument.GetValue(argumentCache) };
-            default:
-                return new object[0];
-        }
+        // make sure the event recognizes the changes we made
+        m_DirtyPersistentCalls.Invoke(reflect, null);
     }
 }
