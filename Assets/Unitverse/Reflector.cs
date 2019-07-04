@@ -81,9 +81,12 @@ public class Reflector : MonoBehaviour
                 var newValue = FindMatchingType(oldValue, o);
                 f_ObjectArgument.SetValue(argumentCache, newValue);
 
-                var assemblyTypeName = newValue.GetType().AssemblyQualifiedName;
-                // if this is incorrect, the function will show as Missing
-                f_ObjectArgumentAssemblyTypeName.SetValue(argumentCache, assemblyTypeName);
+                if (newValue != null)
+                {
+                    var assemblyTypeName = newValue.GetType().AssemblyQualifiedName;
+                    // if this is incorrect, the function will show as Missing
+                    f_ObjectArgumentAssemblyTypeName.SetValue(argumentCache, assemblyTypeName);
+                }
             }
         }
 
@@ -93,6 +96,8 @@ public class Reflector : MonoBehaviour
 
     private Object FindMatchingType(Object oldValue, Object newValue)
     {
+        if (oldValue == null || newValue == null)
+            return newValue;
         if (oldValue.GetType().IsAssignableFrom(newValue.GetType()))
             return newValue;
 
