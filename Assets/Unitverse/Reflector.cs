@@ -14,6 +14,8 @@ public class Reflector : MonoBehaviour
 
     private const BindingFlags FieldFlags =
         BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
+    // UnityEventBase methods
+    private static MethodInfo m_DirtyPersistentCalls;
     // PersistentCall fields
     private static FieldInfo f_Target, f_MethodName, f_Mode, f_Arguments, f_CallState;
     // ArgumentCache fields
@@ -24,13 +26,15 @@ public class Reflector : MonoBehaviour
     {
         Assembly unityAssembly = typeof(UnityEventBase).Assembly;
 
+        m_DirtyPersistentCalls = typeof(UnityEventBase).GetMethod("DirtyPersistentCalls", FieldFlags);
+
         var persistentCallType = unityAssembly.GetType("UnityEngine.Events.PersistentCall");
         f_Target = persistentCallType.GetField("m_Target", FieldFlags);
         f_MethodName = persistentCallType.GetField("m_MethodName", FieldFlags);
         f_Mode = persistentCallType.GetField("m_Mode", FieldFlags);
         f_Arguments = persistentCallType.GetField("m_Arguments", FieldFlags);
         f_CallState = persistentCallType.GetField("m_CallState", FieldFlags);
-        
+
         var argumentCacheType = unityAssembly.GetType("UnityEngine.Events.ArgumentCache");
         f_ObjectArgument = argumentCacheType.GetField("m_ObjectArgument", FieldFlags);
         f_IntArgument = argumentCacheType.GetField("m_IntArgument", FieldFlags);
@@ -56,54 +60,16 @@ public class Reflector : MonoBehaviour
 
     public void Fire()
     {
-        foreach (var item in calls)
-        {
-            var callState = (UnityEventCallState)f_CallState.GetValue(item);
-            if (callState == UnityEventCallState.Off)
-                continue;
-
-            var target = overrideTarget;
-            if (target == null)
-                target = (Object)f_Target.GetValue(item);
-            if (target == null)
-                continue;
-
-            var methodName = (string)f_MethodName.GetValue(item);
-            if (methodName == "") // not assigned
-                continue;
-
-            var mode = (PersistentListenerMode)f_Mode.GetValue(item);
-            // UnityEngine.Events.ArgumentCache
-            var argumentCache = f_Arguments.GetValue(item);
-
-            System.Type[] typeArray = GetTypeArray(argumentCache, mode);
-            object[] arguments = GetArguments(argumentCache, mode);
-
-            // also seems to work for arguments that are subtypes of the method arguments
-            MethodInfo targetMethod = target.GetType().GetMethod(methodName,
-                BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance |
-                BindingFlags.FlattenHierarchy,
-                null, typeArray, null);
-            if (targetMethod == null)
-            {
-                Debug.LogError("No matching method for " + methodName);
-                continue;
-            }
-
-            try
-            {
-                targetMethod.Invoke(target, arguments);
-            }
-            catch (System.Exception e)
-            {
-                Debug.LogError(e);
-            }
-        }
+        reflect.Invoke();
     }
 
     public void SetTarget(Object o)
     {
-        overrideTarget = o;
+        foreach (var item in calls)
+            f_Target.SetValue(item, o);
+
+        // make sure the event recognizes the changes we made
+        m_DirtyPersistentCalls.Invoke(reflect, new object[0]);
     }
 
     private System.Type[] GetTypeArray(object argumentCache, PersistentListenerMode mode)
