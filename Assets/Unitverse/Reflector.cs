@@ -59,7 +59,10 @@ public class Reflector : MonoBehaviour
     public void SetTargets(Object o)
     {
         foreach (var item in calls)
-            f_Target.SetValue(item, o);
+        {
+            var oldValue = (Object)f_Target.GetValue(item);
+            f_Target.SetValue(item, FindMatchingType(oldValue, o));
+        }
 
         // make sure the event recognizes the changes we made
         m_DirtyPersistentCalls.Invoke(reflect, null);
@@ -73,8 +76,12 @@ public class Reflector : MonoBehaviour
             if (mode == PersistentListenerMode.Object)
             {
                 var argumentCache = m_get_arguments.Invoke(item, null);
-                f_ObjectArgument.SetValue(argumentCache, o);
-                var assemblyTypeName = o.GetType().AssemblyQualifiedName;
+
+                var oldValue = (Object)f_ObjectArgument.GetValue(argumentCache);
+                var newValue = FindMatchingType(oldValue, o);
+                f_ObjectArgument.SetValue(argumentCache, newValue);
+
+                var assemblyTypeName = newValue.GetType().AssemblyQualifiedName;
                 // if this is incorrect, the function will show as Missing
                 f_ObjectArgumentAssemblyTypeName.SetValue(argumentCache, assemblyTypeName);
             }
@@ -82,5 +89,28 @@ public class Reflector : MonoBehaviour
 
         // make sure the event recognizes the changes we made
         m_DirtyPersistentCalls.Invoke(reflect, null);
+    }
+
+    private Object FindMatchingType(Object oldValue, Object newValue)
+    {
+        if (oldValue.GetType().IsAssignableFrom(newValue.GetType()))
+            return newValue;
+
+        if ((oldValue is GameObject) && (newValue is Component))
+        {
+            return ((Component)newValue).gameObject;
+        }
+        else if ((oldValue is Component) && (newValue is GameObject))
+        {
+            return ((GameObject)newValue).GetComponent(oldValue.GetType());
+        }
+        else if ((oldValue is Component) && (newValue is Component))
+        {
+            return ((Component)newValue).GetComponent(oldValue.GetType());
+        }
+        else
+        {
+            return newValue;
+        }
     }
 }
