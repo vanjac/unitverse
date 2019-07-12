@@ -14,15 +14,22 @@ public class Relay : MonoBehaviour
     public LimitAction limitAction;
     public List<UnityEvent> events = new List<UnityEvent>() { new UnityEvent() };
 
+    public int Branch
+    {
+        get
+        {
+            return branch;
+        }
+        set
+        {
+            branch = value;
+        }
+    }
+
     public void Fire()
     {
         if (branch >= 0 && branch < events.Count)
             events[branch].Invoke();
-    }
-
-    public void SetBranch(int branch)
-    {
-        this.branch = branch;
     }
 
     public void CountUp()
