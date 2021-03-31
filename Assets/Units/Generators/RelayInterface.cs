@@ -8,6 +8,7 @@ public class RelayInterface : ScriptGenerator
 {
     private const string HEADER =
 @"using UnityEngine;
+[AddComponentMenu(""Relays/{0}"")]
 public class {0} : MonoBehaviour
 {{
     void Start() {{ }}
