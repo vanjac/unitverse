@@ -74,3 +74,4 @@ crashlytics-build.properties
 # ADDED
 .vscode/settings.json
 *.log
+/Assets/Plugins/
