@@ -24,6 +24,8 @@ public class Counter : MonoBehaviour
         get { return _count; }
         set
         {
+            if (!enabled)
+                return;
             value = ClampCount(value, out bool nowAtMin, out bool nowAtMax);
             if (value != _count)
             {
@@ -51,6 +53,8 @@ public class Counter : MonoBehaviour
         get { return range.Min; }
         set
         {
+            if (!enabled)
+                return;
             range.Min = value;
             Count = _count;  // call setter
         }
@@ -61,6 +65,8 @@ public class Counter : MonoBehaviour
         get { return range.Max; }
         set
         {
+            if (!enabled)
+                return;
             range.Max = value;
             Count = _count;  // call setter
         }
@@ -101,25 +107,32 @@ public class Counter : MonoBehaviour
 
     public void SetCountSilent(int value)
     {
+        if (!enabled)
+            return;
         _count = value;
         UpdateStateSilent();
     }
 
     public void SetMinSilent(int value)
     {
+        if (!enabled)
+            return;
         range.Min = value;
         UpdateStateSilent();
     }
 
     public void SetMaxSilent(int value)
     {
+        if (!enabled)
+            return;
         range.Max = value;
         UpdateStateSilent();
     }
 
     public int Add(int value)
     {
-        return Count += value;  // call setter
+        Count += value;  // call setter. when disabled this does nothing
+        return Count;  // returning assignment doesn't call getter
     }
 
     public bool AtMin()

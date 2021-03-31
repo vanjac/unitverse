@@ -28,6 +28,8 @@ public class Trigger : MonoBehaviour
 
     private void CollisionEnter(Collider c)
     {
+        if (!enabled)
+            return;
         GameObject o = c.gameObject;
         if (ColliderMatches(c) && touching.Add(o))
         {
@@ -40,6 +42,8 @@ public class Trigger : MonoBehaviour
 
     private void CollisionExit(Collider c)
     {
+        if (!enabled)
+            return;
         GameObject o = c.gameObject;
         if (touching.Remove(o))
         {
@@ -58,6 +62,11 @@ public class Trigger : MonoBehaviour
     public bool IsTouching(GameObject o)
     {
         return touching.Contains(o);
+    }
+
+    void OnEnable()
+    {
+        touching.Clear();
     }
 
     void OnTriggerEnter(Collider c)

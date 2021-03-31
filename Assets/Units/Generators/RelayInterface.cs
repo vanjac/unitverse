@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Text;
 
+// https://developer.valvesoftware.com/wiki/Logic_relay
+// https://developer.valvesoftware.com/wiki/Func_instance_io_proxy
 [AddComponentMenu("Units/Relay Interface")]
 public class RelayInterface : ScriptGenerator
 {
@@ -8,12 +10,13 @@ public class RelayInterface : ScriptGenerator
 @"using UnityEngine;
 public class {0} : MonoBehaviour
 {{
+    void Start() {{ }}
 ";
     private const string RELAY_TEMPLATE_VOID =
 @"    public UltEvents.UltEvent {0};
     public void {1}()
     {{
-        if ({0} != null)
+        if (enabled && {0} != null)
             {0}.Invoke();
     }}
 ";
@@ -21,7 +24,7 @@ public class {0} : MonoBehaviour
 @"    public UltEvents.UltEvent<{2}> {0};
     public void {1}({2} value)
     {{
-        if ({0} != null)
+        if (enabled && {0} != null)
             {0}.Invoke(value);
     }}
 ";
