@@ -7,6 +7,16 @@ public abstract class Variable<T> : MonoBehaviour
     public T Value
     {
         get { return _value; }
-        set { _value = value; }
+        set
+        {
+            if (!object.Equals(value, _value))  // TODO: slow?
+            {
+                _value = value;
+                if (valueChanged != null)
+                    valueChanged.Invoke(_value);
+            }
+        }
     }
+
+    public UltEvents.UltEvent<T> valueChanged;
 }
