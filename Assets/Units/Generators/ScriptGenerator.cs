@@ -7,7 +7,6 @@ using System;
 using System.IO;
 #endif
 
-[ExecuteAlways]  // call OnDestroy in editor. applies to subclasses
 public abstract class ScriptGenerator : MonoBehaviour
 {
 #if UNITY_EDITOR
@@ -70,12 +69,6 @@ public abstract class ScriptGenerator : MonoBehaviour
             for (; myIndex < allComponents.Length - 2; myIndex++)
                 ComponentUtility.MoveComponentUp(genComponent);
         }
-    }
-
-    void OnDestroy()
-    {
-        if (!Application.IsPlaying(this))
-            DestroyImmediate(genComponent);
     }
 #endif
 }
