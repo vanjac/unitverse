@@ -9,7 +9,8 @@ public class EventList : MonoBehaviour
 
     public void InvokeIndex(int index)
     {
-        if (events != null && events[index] != null)
+        if (events != null && index >= 0 && index < events.Length
+                && events[index] != null)
             events[index].Invoke();
     }
 
