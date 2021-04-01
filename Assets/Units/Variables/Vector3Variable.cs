@@ -23,22 +23,26 @@ public class Vector3Variable : Variable<Vector3>
 
     public Vector3 Add(Vector3 a)
     {
-        return Value += a;
+        Value += a;
+        return Value;
     }
 
     public Vector3 Subtract(Vector3 a)
     {
-        return Value -= a;
+        Value -= a;
+        return Value;
     }
 
     public Vector3 Multiply(float a)
     {
-        return Value *= a;
+        Value *= a;
+        return Value;
     }
 
     public Vector3 Divide(float a)
     {
-        return Value /= a;
+        Value /= a;
+        return Value;
     }
 
     public bool Equal(Vector3 a)
@@ -53,7 +57,8 @@ public class Vector3Variable : Variable<Vector3>
 
     public Vector3 Normalize()
     {
-        return Value = Value.normalized;
+        Value = Value.normalized;
+        return Value;
     }
 
     public float Magnitude()

@@ -5,6 +5,7 @@ public class StringVariable : Variable<string>
 {
     public string Concat(string s)
     {
-        return Value += s;
+        Value += s;
+        return Value;
     }
 }

@@ -6,27 +6,32 @@ public class FloatVariable : Variable<float>
 {
     public float Add(float a)
     {
-        return Value += a;
+        Value += a;
+        return Value;
     }
 
     public float Subtract(float a)
     {
-        return Value -= a;
+        Value -= a;
+        return Value;
     }
 
     public float Multiply(float a)
     {
-        return Value *= a;
+        Value *= a;
+        return Value;
     }
 
     public float Divide(float a)
     {
-        return Value /= a;
+        Value /= a;
+        return Value;
     }
 
     public float Remainder(float a)
     {
-        return Value %= a;
+        Value %= a;
+        return Value;
     }
 
     public bool Equal(float a)

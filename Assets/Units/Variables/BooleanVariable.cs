@@ -5,6 +5,7 @@ public class BooleanVariable : Variable<bool>
 {
     public bool Toggle()
     {
-        return Value = !Value;
+        Value = !Value;
+        return Value;
     }
 }

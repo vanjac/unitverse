@@ -29,7 +29,8 @@ public class QuaternionVariable : Variable<Quaternion>
 
     public Quaternion Multiply(Quaternion a)
     {
-        return Value *= a;
+        Value *= a;
+        return Value;
     }
 
     public Vector3 Rotate(Vector3 point)

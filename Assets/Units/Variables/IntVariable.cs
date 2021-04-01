@@ -5,27 +5,32 @@ public class IntVariable : Variable<int>
 {
     public int Add(int a)
     {
-        return Value += a;
+        Value += a;
+        return Value;  // returning assignment doesn't call getter
     }
 
     public int Subtract(int a)
     {
-        return Value -= a;
+        Value -= a;
+        return Value;
     }
 
     public int Multiply(int a)
     {
-        return Value *= a;
+        Value *= a;
+        return Value;
     }
 
     public int Divide(int a)
     {
-        return Value /= a;
+        Value /= a;
+        return Value;
     }
 
     public int Remainder(int a)
     {
-        return Value %= a;
+        Value %= a;
+        return Value;
     }
 
     public bool Equal(int a)
