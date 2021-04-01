@@ -2,40 +2,28 @@ using UnityEngine;
 
 // https://developer.valvesoftware.com/wiki/Logic_branch
 [AddComponentMenu("Units/Branch")]
-public class Branch : MonoBehaviour
+public class Branch : BooleanVariable
 {
-    [SerializeField]
-    private bool _state;
-    public bool State
-    {
-        get { return _state; }
-        set { _state = value; }
-    }
-
     public UltEvents.UltEvent True, False;
 
     public void Test()
     {
-        if (State && True != null)
+        if (Value && True != null)
             True.Invoke();
-        else if (!State && False != null)
+        else if (!Value && False != null)
             False.Invoke();
     }
 
     public void SetTest(bool value)
     {
-        State = value;
+        Value = value;
         Test();
     }
 
-    public void Toggle()
-    {
-        State = !State;
-    }
-
-    public void ToggleTest()
+    public bool ToggleTest()
     {
         Toggle();
         Test();
+        return Value;
     }
 }
