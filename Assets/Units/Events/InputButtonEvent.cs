@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[AddComponentMenu("Units/Input Button Event")]
+[AddComponentMenu("Units/Events/Input Button Event")]
 public class InputButtonEvent : MonoBehaviour
 {
     [SerializeField]

@@ -1,7 +1,7 @@
 using UnityEngine;
 
 // https://developer.valvesoftware.com/wiki/Logic_timer
-[AddComponentMenu("Units/Timer")]
+[AddComponentMenu("Units/Events/Timer")]
 public class Timer : MonoBehaviour
 {
     [SerializeField]

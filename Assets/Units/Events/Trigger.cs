@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // https://developer.valvesoftware.com/wiki/Triggers
-[AddComponentMenu("Units/Trigger")]
+[AddComponentMenu("Units/Events/Trigger")]
 public class Trigger : MonoBehaviour
 {
     [SerializeField]

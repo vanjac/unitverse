@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[AddComponentMenu("Units/Animation Complete Event")]
+[AddComponentMenu("Units/Events/Animation Complete Event")]
 public class AnimationCompleteEvent : MonoBehaviour
 {
     [MyBox.AutoProperty]
