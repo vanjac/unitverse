@@ -2,61 +2,32 @@ using UnityEngine;
 
 // https://developer.valvesoftware.com/wiki/Math_counter
 [AddComponentMenu("Units/Counter")]
-public class Counter : MonoBehaviour
+public class Counter : IntVariable
 {
-    [SerializeField]
-    private int _count;
+    private struct CounterState
+    {
+        public bool atMin, atMax;
+    }
+
     [SerializeField]
     private MyBox.MinMaxInt range;
     public bool clamp;
-    public bool fireOnStart;
 
-    public UltEvents.UltEvent<int> countChanged;
     public UltEvents.UltEvent hitMin, hitMax;
     public UltEvents.UltEvent changedFromMin, changedFromMax;
-
-    // can't just check previous value because min and max might have changed
-    // TODO: refactor so these aren't necessary
-    private bool atMin, atMax;
-
-    public int Count
-    {
-        get { return _count; }
-        set
-        {
-            if (!enabled)
-                return;
-            value = ClampCount(value, out bool nowAtMin, out bool nowAtMax);
-            if (value != _count)
-            {
-                _count = value;
-                if (countChanged != null)
-                    countChanged.Invoke(_count);
-            }
-
-            if (nowAtMin && !atMin && hitMin != null)
-                hitMin.Invoke();
-            else if (!nowAtMin && atMin && changedFromMin != null)
-                changedFromMin.Invoke();
-            atMin = nowAtMin;
-
-            if (nowAtMax && !atMax && hitMax != null)
-                hitMax.Invoke();
-            else if (!nowAtMax && atMax && changedFromMax != null)
-                changedFromMax.Invoke();
-            atMax = nowAtMax;
-        }
-    }
 
     public int Min
     {
         get { return range.Min; }
         set
         {
-            if (!enabled)
-                return;
-            range.Min = value;
-            Count = _count;  // call setter
+            var oldState = GetState(Value);
+            int oldValue = Value;
+            SetMinSilent(value);
+            // don't call StateChange twice
+            if (oldValue != Value)
+                base.OnChanged(oldValue, Value);
+            StateChange(oldState, GetState(Value));
         }
     }
 
@@ -65,83 +36,75 @@ public class Counter : MonoBehaviour
         get { return range.Max; }
         set
         {
-            if (!enabled)
-                return;
-            range.Max = value;
-            Count = _count;  // call setter
+            var oldState = GetState(Value);
+            int oldValue = Value;
+            SetMaxSilent(value);
+            if (oldValue != Value)
+                base.OnChanged(oldValue, Value);
+            StateChange(oldState, GetState(Value));
         }
     }
 
-    private int ClampCount(int value, out bool atMin, out bool atMax)
+    private CounterState GetState(int value)
     {
-        atMin = value <= range.Min;
-        atMax = value >= range.Max;
+        return new CounterState
+        {
+            atMin = value <= Min,
+            atMax = value >= Max
+        };
+    }
+
+    protected override int ConstrainValue(int value)
+    {
+        var state = GetState(value);
         if (!clamp)
             return value;
-        else if (atMin)
+        else if (state.atMin)
             return range.Min;
-        else if (atMax)
+        else if (state.atMax)
             return range.Max;
         else
-            return value;
+            return Value;
     }
 
-    private void UpdateStateSilent()
+    protected override void OnChanged(int oldValue, int newValue)
     {
-        _count = ClampCount(_count, out atMin, out atMax);  // don't call setter
+        base.OnChanged(oldValue, newValue);
+        StateChange(GetState(oldValue), GetState(newValue));
     }
 
-    void Start()
+    private void StateChange(CounterState oldState, CounterState newState)
     {
-        if (fireOnStart)
-        {
-            int initValue = Count;
-            _count = int.MinValue;  // silent
-            Count = initValue;  // setter, always invoke
-        }
-        else
-        {
-            UpdateStateSilent();
-        }
-    }
+        if (newState.atMin && !oldState.atMin && hitMin != null)
+            hitMin.Invoke();
+        else if (!newState.atMin && oldState.atMin && changedFromMin != null)
+            changedFromMin.Invoke();
 
-    public void SetCountSilent(int value)
-    {
-        if (!enabled)
-            return;
-        _count = value;
-        UpdateStateSilent();
+        if (newState.atMax && !oldState.atMax && hitMax != null)
+            hitMax.Invoke();
+        else if (!newState.atMax && oldState.atMax && changedFromMax != null)
+            changedFromMax.Invoke();
     }
 
     public void SetMinSilent(int value)
     {
-        if (!enabled)
-            return;
         range.Min = value;
-        UpdateStateSilent();
+        UpdateValue();
     }
 
     public void SetMaxSilent(int value)
     {
-        if (!enabled)
-            return;
         range.Max = value;
-        UpdateStateSilent();
-    }
-
-    public int Add(int value)
-    {
-        Count += value;  // call setter. when disabled this does nothing
-        return Count;  // returning assignment doesn't call getter
+        UpdateValue();
     }
 
     public bool AtMin()
     {
-        return atMin;
+        return GetState(Value).atMin;
     }
 
     public bool AtMax()
     {
-        return atMax;
+        return GetState(Value).atMax;
     }
 }

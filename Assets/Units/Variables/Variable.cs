@@ -9,14 +9,35 @@ public abstract class Variable<T> : MonoBehaviour
         get { return _value; }
         set
         {
-            if (!object.Equals(value, _value))  // TODO: slow?
-            {
-                _value = value;
-                if (valueChanged != null)
-                    valueChanged.Invoke(_value);
-            }
+            T oldValue = _value;
+            SetValueSilent(value);
+            if (!object.Equals(oldValue, _value))  // TODO: slow?
+                OnChanged(oldValue, _value);
         }
     }
 
     public UltEvents.UltEvent<T> valueChanged;
+
+    protected virtual T ConstrainValue(T value)
+    {
+        return value;
+    }
+
+    // NOT called when SetValueSilent is called
+    protected virtual void OnChanged(T oldValue, T newValue)
+    {
+        if (valueChanged != null)
+            valueChanged.Invoke(newValue);
+    }
+
+    protected void UpdateValue()
+    {
+        _value = ConstrainValue(_value);
+    }
+
+    public void SetValueSilent(T value)
+    {
+        _value = value;
+        UpdateValue();
+    }
 }
