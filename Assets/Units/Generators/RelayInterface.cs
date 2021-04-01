@@ -31,7 +31,12 @@ public class {0} : MonoBehaviour
 ";
     private const string FOOTER = "}\n";
 
-    public string[] relays;
+    public string[] relays = new string[0];
+
+    protected override string NamePrefix()
+    {
+        return "Relay";
+    }
 
     private string TitleCase(string s)
     {

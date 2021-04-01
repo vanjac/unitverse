@@ -15,6 +15,8 @@ public abstract class ScriptGenerator : MonoBehaviour
 
     protected abstract string GenerateCode(string className);
 
+    protected abstract string NamePrefix();
+
     protected class DoCreateScriptAsset : EndNameEditAction
     {
         public ScriptGenerator generator;
@@ -40,8 +42,10 @@ public abstract class ScriptGenerator : MonoBehaviour
             var action = ScriptableObject.CreateInstance<DoCreateScriptAsset>();
             action.generator = this;
             Texture2D icon = EditorGUIUtility.IconContent("cs Script Icon").image as Texture2D;
+            string defaultName = NamePrefix()
+                + UnityEngine.Random.Range(0, 1000000).ToString("D6") + ".cs";
             ProjectWindowUtil.StartNameEditingIfProjectWindowExists(
-                0, action, "NewScript.cs", icon, null);
+                0, action, defaultName, icon, null);
             Selection.activeGameObject = gameObject;  // don't lose focus
         }
         else
