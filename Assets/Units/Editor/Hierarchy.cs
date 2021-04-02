@@ -14,8 +14,11 @@ public static class Hierarchy
             
         Undo.RecordObject(parent, "Reposition parent");
         Undo.RecordObjects(children, "Reposition parent");
-        parent.DetachChildren();
-        parent.position = selected.position;
+        foreach (Transform child in children)
+            child.parent = parent.parent;
+        parent.localPosition = selected.localPosition;
+        parent.localRotation = selected.localRotation;
+        parent.localScale = selected.localScale;
         foreach (Transform child in children)
             child.parent = parent;
     }
