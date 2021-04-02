@@ -2,8 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[AddComponentMenu("Units/Events/Animation Complete Event")]
-public class AnimationCompleteEvent : MonoBehaviour
+[AddComponentMenu("Units/Events/Animation Events")]
+public class AnimationEvents : MonoBehaviour
 {
     [MyBox.AutoProperty]
     public new Animation animation;
@@ -14,6 +14,7 @@ public class AnimationCompleteEvent : MonoBehaviour
         get { return _animationName; }
         set { _animationName = value; }
     }
+    public UltEvents.UltEvent start;
     public UltEvents.UltEvent complete;
 
     private bool wasPlaying;
@@ -31,6 +32,8 @@ public class AnimationCompleteEvent : MonoBehaviour
         else
             isPlaying = animation.IsPlaying(AnimationName);
         
+        if (isPlaying && !wasPlaying)
+            start.Invoke();
         if (!isPlaying && wasPlaying)
             complete.Invoke();
         wasPlaying = isPlaying;
