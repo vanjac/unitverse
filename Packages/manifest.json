@@ -1,9 +1,9 @@
 {
   "dependencies": {
+    "com.domybest.mybox": "https://github.com/Deadcows/MyBox.git",
     "com.unity.ide.vscode": "1.2.3",
     "com.unity.render-pipelines.universal": "11.0.0",
     "com.unity.textmeshpro": "3.0.4",
-    "com.unity.timeline": "1.5.4",
     "com.unity.ugui": "1.0.0",
     "com.unity.modules.ai": "1.0.0",
     "com.unity.modules.androidjni": "1.0.0",
@@ -35,7 +35,6 @@
     "com.unity.modules.video": "1.0.0",
     "com.unity.modules.vr": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
-    "com.unity.modules.xr": "1.0.0",
-    "com.domybest.mybox": "https://github.com/Deadcows/MyBox.git"
+    "com.unity.modules.xr": "1.0.0"
   }
 }
