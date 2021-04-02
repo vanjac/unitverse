@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 using System.Text;
 
 // https://developer.valvesoftware.com/wiki/Logic_relay
@@ -6,30 +7,36 @@ using System.Text;
 [AddComponentMenu("Units/Relay Interface")]
 public class RelayInterface : ScriptGenerator
 {
-    private const string HEADER =
-@"using UnityEngine;
-[AddComponentMenu(""Relays/{0}"")]
-public class {0} : MonoBehaviour
-{{
-    void Start() {{ }}
-";
-    private const string RELAY_TEMPLATE_VOID =
-@"    public UltEvents.UltEvent {0};
-    public void {1}()
-    {{
-        if (enabled && {0} != null)
-            {0}.Invoke();
-    }}
-";
-    private const string RELAY_TEMPLATE_ARG =
-@"    public UltEvents.UltEvent<{2}> {0};
-    public void {1}({2} value)
-    {{
-        if (enabled && {0} != null)
-            {0}.Invoke(value);
-    }}
-";
-    private const string FOOTER = "}\n";
+    private readonly string HEADER = string.Join(
+        Environment.NewLine,
+        "using UnityEngine;",
+        "[AddComponentMenu(\"Relays/{0}\")]",
+        "public class {0} : MonoBehaviour",
+        "{{",
+        "    void Start() {{ }}",
+        "");
+    private readonly string RELAY_TEMPLATE_VOID = string.Join(
+        Environment.NewLine,
+        "    public UltEvents.UltEvent {0};",
+        "    public void {1}()",
+        "    {{",
+        "        if (enabled && {0} != null)",
+        "            {0}.Invoke();",
+        "    }}",
+        "");
+    private readonly string RELAY_TEMPLATE_ARG = string.Join(
+        Environment.NewLine,
+        @"    public UltEvents.UltEvent<{2}> {0};",
+        "    public void {1}({2} value)",
+        "    {{",
+        "        if (enabled && {0} != null)",
+        "            {0}.Invoke(value);",
+        "    }}",
+        "");
+    private readonly string FOOTER = string.Join(
+        Environment.NewLine,
+        "}",
+        "");
 
     public string[] relays = new string[0];
 
@@ -40,12 +47,12 @@ public class {0} : MonoBehaviour
 
     private string TitleCase(string s)
     {
-        return System.Char.ToUpper(s[0]) + s.Substring(1);
+        return Char.ToUpper(s[0]) + s.Substring(1);
     }
 
     private string LowerCamelCase(string s)
     {
-        return System.Char.ToLower(s[0]) + s.Substring(1);
+        return Char.ToLower(s[0]) + s.Substring(1);
     }
 
     protected override string GenerateCode(string className)
