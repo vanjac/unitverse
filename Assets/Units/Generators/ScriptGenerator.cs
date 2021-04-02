@@ -74,5 +74,19 @@ public abstract class ScriptGenerator : MonoBehaviour
                 ComponentUtility.MoveComponentUp(genComponent);
         }
     }
+
+    [MyBox.ButtonMethod]
+    public void DestroyAll()
+    {
+        if (EditorUtility.DisplayDialog("Are you sure?",
+            "Destroy this component and the generated script/component?", "Yes", "No"))
+        {
+            if (genComponent != null)
+                Undo.DestroyObjectImmediate(genComponent);
+            if (genScript != null)
+                AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(genScript));
+            Undo.DestroyObjectImmediate(this);
+        }
+    }
 #endif
 }
