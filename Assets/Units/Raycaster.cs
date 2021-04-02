@@ -22,7 +22,7 @@ public class Raycaster : MonoBehaviour
     public QueryTriggerInteraction triggerInteraction
         = QueryTriggerInteraction.UseGlobal;
     
-    public UltEvents.UltEvent<Collider> hit;
+    public UltEvents.UltEvent<Transform> hit;
     public UltEvents.UltEvent miss;
 
     public bool Raycast()
@@ -30,7 +30,7 @@ public class Raycaster : MonoBehaviour
         bool raycastHit = Physics.Raycast(transform.position, transform.forward,
             out RaycastHit hitInfo, MaxDistance, Mask, triggerInteraction);
         if (raycastHit && hit != null)
-            hit.Invoke(hitInfo.collider);
+            hit.Invoke(hitInfo.transform);  // uses rigidbody if available
         else if (!raycastHit && miss != null)
             miss.Invoke();
         return raycastHit;
