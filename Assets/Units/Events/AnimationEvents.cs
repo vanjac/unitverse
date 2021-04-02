@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [AddComponentMenu("Units/Events/Animation Events")]
-public class AnimationEvents : MonoBehaviour
+public class AnimationEvents : Unit
 {
     [MyBox.AutoProperty]
     public new Animation animation;

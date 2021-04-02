@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [AddComponentMenu("Units/Raycaster")]
-public class Raycaster : MonoBehaviour
+public class Raycaster : Unit
 {
     [SerializeField]
     private float _maxDistance = Mathf.Infinity;

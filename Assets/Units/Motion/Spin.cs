@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [AddComponentMenu("Units/Spin")]
-public class Spin : MonoBehaviour
+public class Spin : Unit
 {
     [SerializeField]
     private float _speed = 45;

@@ -1,7 +1,7 @@
 using UnityEngine;
 
 // https://developer.valvesoftware.com/wiki/Filter_base
-public abstract class Filter : MonoBehaviour
+public abstract class Filter : Unit
 {
     public UltEvents.UltEvent<GameObject> pass, fail;
     public bool searchParents;

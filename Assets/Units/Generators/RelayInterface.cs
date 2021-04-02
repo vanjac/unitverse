@@ -2,6 +2,12 @@ using UnityEngine;
 using System;
 using System.Text;
 
+// does NOT extend from Unit. show the script field so it can be easily found
+public class GeneratedRelays : MonoBehaviour
+{
+    void Start() { }  // show enabled checkbox
+}
+
 // https://developer.valvesoftware.com/wiki/Logic_relay
 // https://developer.valvesoftware.com/wiki/Func_instance_io_proxy
 [AddComponentMenu("Units/Relay Interface")]
@@ -11,9 +17,8 @@ public class RelayInterface : ScriptGenerator
         Environment.NewLine,
         "using UnityEngine;",
         "[AddComponentMenu(\"Relays/{0}\")]",
-        "public class {0} : MonoBehaviour",
+        "public class {0} : GeneratedRelays",
         "{{",
-        "    void Start() {{ }}",
         "");
     private readonly string RELAY_TEMPLATE_VOID = string.Join(
         Environment.NewLine,

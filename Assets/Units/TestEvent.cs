@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [AddComponentMenu("Units/Test Event")]
-public class TestEvent : MonoBehaviour
+public class TestEvent : Unit
 {
     public string note;
     public UltEvents.UltEvent _event;

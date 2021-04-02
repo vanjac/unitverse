@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public abstract class Variable<T> : MonoBehaviour
+public abstract class Variable<T> : Unit
 {
     [SerializeField]
     private T _value;

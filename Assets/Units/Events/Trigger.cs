@@ -4,7 +4,7 @@ using UnityEngine;
 
 // https://developer.valvesoftware.com/wiki/Triggers
 [AddComponentMenu("Units/Events/Trigger")]
-public class Trigger : MonoBehaviour
+public class Trigger : Unit
 {
     [SerializeField]
     private Filter _triggerFilter;

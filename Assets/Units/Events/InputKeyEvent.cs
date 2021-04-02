@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [AddComponentMenu("Units/Events/Input Key Event")]
-public class InputKeyEvent : MonoBehaviour
+public class InputKeyEvent : Unit
 {
     [SerializeField, MyBox.SearchableEnum]
     private KeyCode _key;

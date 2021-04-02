@@ -3,7 +3,7 @@ using UnityEngine;
 
 // https://developer.valvesoftware.com/wiki/Logic_case
 [AddComponentMenu("Units/Event List")]
-public class EventList : MonoBehaviour
+public class EventList : Unit
 {
     public UltEvents.UltEvent[] events;
 

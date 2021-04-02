@@ -7,7 +7,7 @@ using System;
 using System.IO;
 #endif
 
-public abstract class ScriptGenerator : MonoBehaviour
+public abstract class ScriptGenerator : Unit
 {
 #if UNITY_EDITOR
     public MonoScript genScript;

@@ -2,7 +2,7 @@ using UnityEngine;
 
 // https://developer.valvesoftware.com/wiki/Logic_timer
 [AddComponentMenu("Units/Events/Timer")]
-public class Timer : MonoBehaviour
+public class Timer : Unit
 {
     [SerializeField]
     private float _interval;

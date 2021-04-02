@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [AddComponentMenu("Units/Events/Input Button Event")]
-public class InputButtonEvent : MonoBehaviour
+public class InputButtonEvent : Unit
 {
     [SerializeField]
     private string _button;
