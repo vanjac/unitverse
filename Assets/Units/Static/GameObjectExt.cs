@@ -2,6 +2,11 @@ using UnityEngine;
 
 public static class GameObjectExt
 {
+    public static GameObject Literal(GameObject o)
+    {
+        return o;
+    }
+
     public static bool IsActive(GameObject o)
     {
         return o.activeInHierarchy;

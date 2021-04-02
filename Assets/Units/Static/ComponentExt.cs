@@ -2,6 +2,11 @@ using UnityEngine;
 
 public static class ComponentExt
 {
+    public static Component Literal(Component c)
+    {
+        return c;
+    }
+
     public static GameObject GetGameObject(Component c)
     {
         return c.gameObject;
