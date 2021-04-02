@@ -79,3 +79,7 @@ crashlytics-build.properties
 !/Assets/Units/
 !/Assets/Units/*
 !/Assets/Units/**/*
+!/Assets/Gizmos.meta
+!/Assets/Gizmos/
+!/Assets/Gizmos/*
+!/Assets/Gizmos/**/*
